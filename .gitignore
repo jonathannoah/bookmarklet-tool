@@ -23,4 +23,4 @@ dist-ssr
 *.sln
 *.sw?
 
-src/bookmarklet.js
+src/react-app/bookmarklet.js

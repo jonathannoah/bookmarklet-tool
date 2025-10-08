@@ -1,9 +1,9 @@
 {
   "name": "bookmarklet-tool",
-  "description": "A template for building a React application with Vite, Hono, and Cloudflare Workers",
+  "description": "",
   "private": true,
   "cloudflare": {
-    "label": "Vite React Template",
+    "label": "",
     "products": [
       "Workers"
     ],
@@ -31,7 +31,6 @@
     "globals": "16.2.0",
     "prettier": "3.6.2",
     "tailwindcss": "^4.1.14",
-    "terser": "^5.44.0",
     "typescript": "5.8.3",
     "typescript-eslint": "8.35.0",
     "vite": "^6.3.6",
@@ -39,11 +38,11 @@
     "wrangler": "^4.42.1"
   },
   "scripts": {
-    "build": "tsc -b && vite build",
+    "build": "esbuild --minify --target=es6 ./src/react-app/bookmarklet.ts > ./src/react-app/bookmarklet.js && tsc -b && vite build",
     "cf-typegen": "wrangler types",
-    "check": "tsc && vite build && wrangler deploy --dry-run",
+    "check": "esbuild --minify --target=es6 ./src/react-app/bookmarklet.ts > ./src/react-app/bookmarklet.js && tsc && vite build && wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
-    "dev": "vite",
+    "dev": "esbuild --minify --target=es6 ./src/react-app/bookmarklet.ts > ./src/react-app/bookmarklet.js && vite",
     "lint": "eslint .",
     "preview": "npm run build && vite preview"
   },

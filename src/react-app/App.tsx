@@ -1,7 +1,7 @@
 // src/App.tsx
 
 import { useRef, useState } from "react";
-import bookmarkletTemplate from "../bookmarklet.js?raw";
+import bookmarkletTemplate from "./bookmarklet.js?raw";
 
 export default function App() {
   const [baseUrl, setBaseUrl] = useState<string>();
