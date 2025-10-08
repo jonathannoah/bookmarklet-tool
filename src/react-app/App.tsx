@@ -1,9 +1,7 @@
 // src/App.tsx
 
 import { useRef, useState } from "react";
-import { transpile } from "typescript";
-import { minify_sync } from "terser";
-import bookmarkletTS from "./bookmarklet.ts?raw";
+import bookmarkletTemplate from "../bookmarklet.js?raw";
 
 export default function App() {
   const [baseUrl, setBaseUrl] = useState<string>();
@@ -95,28 +93,29 @@ export default function App() {
       ["%PARAMS%", parameters],
     ];
 
-    const transpiledBookmarklet = transpile(bookmarkletTS);
-
     const composedBookmarklet = bookmarkletReplacements.reduce(
       (acc, [oldStr, newStr]) => {
         return acc.replace(oldStr ?? "", newStr ?? "");
       },
-      transpiledBookmarklet,
+      bookmarkletTemplate,
     );
 
-    const minifiedBookmarklet = minify_sync(composedBookmarklet, {
-      mangle: false,
-    });
-
-    const bookmarkletFunction = `javascript:${encodeURIComponent(minifiedBookmarklet.code as string)}`;
+    const bookmarkletFunction = `javascript:${encodeURIComponent(composedBookmarklet as string)}`;
     setBookmarklet(bookmarkletFunction);
   }
 
   function testLinkResolver() {
+    const testUrl = new URL(baseUrl ?? "");
+    const testParams = new URLSearchParams(parameters);
+
+    testParams.forEach((value, key) => testUrl.searchParams.append(key, value));
+
+    testUrl.searchParams.append("rft_id", "info:doi/10.1136/bmj.331.7531.1498");
+    testUrl.searchParams.append("ctx_ver", "Z39.88-2004");
+    testUrl.searchParams.append("rft_val_fmt", "info:ofi/fmt:kev:mtx:journal");
+
     try {
-      window.open(
-        `${baseUrl}rft_id=info:doi/10.1136/bmj.331.7531.1498${parameters ?? ""}`,
-      );
+      window.open(testUrl.href, "_blank");
     } catch (e) {
       console.log(e);
     }
@@ -157,10 +156,7 @@ export default function App() {
               placeholder="&parameter_1=value_1&parameter_2=value_2"
               onChange={handleParametersChange}
             />
-            <p>
-              Parameters will be appended to the OpenURL. Parameter should begin
-              with "&".
-            </p>
+            <p>Parameters will be appended to the OpenURL.</p>
           </fieldset>
         </div>
       </div>
