@@ -6,12 +6,10 @@ import { minify_sync } from "terser";
 import bookmarkletTS from "./bookmarklet.ts?raw";
 
 export default function App() {
-  const [baseUrl, setBaseUrl] = useState<string>(
-    "https://doi.crossref.org/openurl",
-  );
+  const [baseUrl, setBaseUrl] = useState<string>();
   const [bookmarklet, setBookmarklet] = useState<string>();
   const [title, setTitle] = useState<string>();
-  const [parameters, setParameters] = useState<string>("pid=email@address.com");
+  const [parameters, setParameters] = useState<string>();
 
   const bookmarkletCodeRef:
     | React.RefObject<HTMLTextAreaElement>
