@@ -1,8 +1,10 @@
-import { transpile } from "Typescript";
-import { minify_sync } from "terser";
 import { readFile, writeFile } from "fs";
 
-export default function prebuildBookmarklet(source: string) {
+export default function prebuildBookmarklet(
+  source: string,
+  transpile: Function,
+  minify_sync: Function,
+) {
   return {
     name: "prebuild-bookmarklet-plugin",
     buildStart() {
