@@ -1,4 +1,8 @@
 (function () {
+  interface Meta {
+    [index: string]: string;
+  }
+
   const base = new URL("%BASE%");
   const params = new URLSearchParams("%PARAMS%");
 
@@ -9,64 +13,37 @@
 
   const select = window.getSelection()?.toString();
 
-  base.searchParams.append("rft_id", `info:doi/${select}`);
-
   if (select !== "") {
+    base.searchParams.append("rft_id", `info:doi/${select}`);
     return window.open(base);
   }
 
-  console.log(base.href);
+  const querySelectors: Meta = {
+    doi: "meta[name='citation_doi' i],[name='publication_doi' i],[name='dc.identifier' i]",
+    atitle: "meta[name='citation_title' i],[name='dc.title' i]",
+    jtitle: "meta[name='citation_journal_title' i]",
+    aulast: "meta[name='citation_author' i],[name='dc.creator' i]",
+    year: "meta[name='citation_publication_date' i],[name='dc.date' i]",
+    spage: "meta[name='citation_firstpage' i]",
+    epage: "meta[name='citation_lastpage' i]",
+  };
 
-  const doi = (
-    document.querySelector(
-      "meta[name='citation_doi' i],[name='publication_doi' i],[name='dc.identifier' i]",
-    ) as HTMLMetaElement
-  )?.content;
+  const meta: Meta = {};
 
-  const atitle = (
-    document.querySelector(
-      "meta[name='citation_title' i],[name='dc.title' i]",
-    ) as HTMLMetaElement
-  )?.content;
-
-  const jtitle = (
-    document.querySelector(
-      "meta[name='citation_journal_title' i]",
-    ) as HTMLMetaElement
-  )?.content;
-
-  const aulast = (
-    document.querySelector(
-      "meta[name='citation_author' i],[name='dc.creator' i]",
-    ) as HTMLMetaElement
-  )?.content;
-
-  const year = (
-    document.querySelector(
-      "meta[name='citation_publication_date' i],[name='dc.date' i]",
-    ) as HTMLMetaElement
-  )?.content;
-
-  const spage = (
-    document.querySelector(
-      "meta[name='citation_firstpage' i]",
-    ) as HTMLMetaElement
-  )?.content;
-
-  const epage = (
-    document.querySelector(
-      "meta[name='citation_lastpage' i]",
-    ) as HTMLMetaElement
-  )?.content;
+  for (let querySelector in querySelectors) {
+    meta[querySelector] = (
+      document.querySelector(querySelectors[querySelector]) as HTMLMetaElement
+    )?.content;
+  }
 
   let has_meta = false;
 
-  if (doi) {
-    base.searchParams.append("rft_id", `info:doi/${doi}`);
+  if (meta["doi"]) {
+    base.searchParams.append("rft_id", `info:doi/${meta["doi"]}`);
     has_meta = true;
   }
 
-  if (atitle && jtitle && aulast && year) {
+  if (meta["atitle"] && meta["jtitle"] && meta["aulast"] && meta["year"]) {
     has_meta = true;
   }
 
@@ -76,24 +53,24 @@
     );
   }
 
-  if (atitle) {
-    base.searchParams.append("rft.atitle", atitle);
+  if (meta["atitle"]) {
+    base.searchParams.append("rft.atitle", meta["atitle"]);
   }
 
-  if (jtitle) {
-    base.searchParams.append("rft.jtitle", jtitle);
+  if (meta["jtitle"]) {
+    base.searchParams.append("rft.jtitle", meta["jtitle"]);
   }
 
-  if (aulast) {
+  if (meta["aulast"]) {
     let split: string | string[], lname: string;
-    if (aulast.includes(",")) {
-      split = aulast
+    if (meta["aulast"].includes(",")) {
+      split = meta["aulast"]
         .trim()
         .replace(/ +(?= )/g, "")
         .split(",");
       lname = split[0];
     } else {
-      split = aulast
+      split = meta["aulast"]
         .trim()
         .replace(/ +(?= )/g, "")
         .split(" ");
@@ -102,22 +79,22 @@
     base.searchParams.append("rft.aulast", lname);
   }
 
-  if (year) {
-    if (year.includes("-")) {
-      base.searchParams.append("rft.date", year.split("-")[0]);
-    } else if (year.includes("/")) {
-      base.searchParams.append("rft.date", year.split("/")[0]);
+  if (meta["year"]) {
+    if (meta["year"].includes("-")) {
+      base.searchParams.append("rft.date", meta["year"].split("-")[0]);
+    } else if (meta["year"].includes("/")) {
+      base.searchParams.append("rft.date", meta["year"].split("/")[0]);
     } else {
-      base.searchParams.append("rft.date", year);
+      base.searchParams.append("rft.date", meta["year"]);
     }
   }
 
-  if (spage) {
-    base.searchParams.append("rft.spage", spage);
+  if (meta["spage"]) {
+    base.searchParams.append("rft.spage", meta["spage"]);
   }
 
-  if (epage) {
-    base.searchParams.append("rft.epage", epage);
+  if (meta["epage"]) {
+    base.searchParams.append("rft.epage", meta["epage"]);
   }
 
   window.open(base.href, "_blank");

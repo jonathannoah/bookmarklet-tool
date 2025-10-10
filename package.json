@@ -38,11 +38,12 @@
     "wrangler": "^4.42.1"
   },
   "scripts": {
-    "build": "esbuild --minify --target=es6 ./src/react-app/bookmarklet.ts > ./src/react-app/bookmarklet.js && tsc -b && vite build",
+    "build": "npm run compile-bookmarklet && tsc -b && vite build",
     "cf-typegen": "wrangler types",
-    "check": "esbuild --minify --target=es6 ./src/react-app/bookmarklet.ts > ./src/react-app/bookmarklet.js && tsc && vite build && wrangler deploy --dry-run",
+    "check": "npm run compile-bookmarklet && tsc && vite build && wrangler deploy --dry-run",
+    "compile-bookmarklet": "esbuild --minify --target=es6 ./src/react-app/bookmarklet.ts > ./src/react-app/bookmarklet.js",
     "deploy": "wrangler deploy",
-    "dev": "esbuild --minify --target=es6 ./src/react-app/bookmarklet.ts > ./src/react-app/bookmarklet.js && vite",
+    "dev": "npm run compile-bookmarklet && vite",
     "lint": "eslint .",
     "preview": "npm run build && vite preview"
   },
