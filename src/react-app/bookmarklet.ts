@@ -1,8 +1,4 @@
 (function () {
-  interface Meta {
-    [index: string]: string;
-  }
-
   const base = new URL("%BASE%");
   const params = new URLSearchParams("%PARAMS%");
 
@@ -18,7 +14,7 @@
     return window.open(base);
   }
 
-  const querySelectors: Meta = {
+  const querySelectors: { [index: string]: string } = {
     doi: "meta[name='citation_doi' i],[name='publication_doi' i],[name='dc.identifier' i]",
     atitle: "meta[name='citation_title' i],[name='dc.title' i]",
     jtitle: "meta[name='citation_journal_title' i]",
@@ -26,24 +22,32 @@
     year: "meta[name='citation_publication_date' i],[name='dc.date' i]",
     spage: "meta[name='citation_firstpage' i]",
     epage: "meta[name='citation_lastpage' i]",
+    volume: "meta[name='citation_volume' i]",
+    issue: "meta[name='citation_issue' i]",
+    issn: "meta[name='citation_issn' i]",
   };
 
-  const meta: Meta = {};
+  const rftParams: { [index: string]: string } = {};
 
   for (let querySelector in querySelectors) {
-    meta[querySelector] = (
+    rftParams[querySelector] = (
       document.querySelector(querySelectors[querySelector]) as HTMLMetaElement
     )?.content;
   }
 
   let has_meta = false;
 
-  if (meta["doi"]) {
-    base.searchParams.append("rft_id", `info:doi/${meta["doi"]}`);
+  if (rftParams["doi"]) {
+    base.searchParams.append("rft_id", `info:doi/${rftParams["doi"]}`);
     has_meta = true;
   }
 
-  if (meta["atitle"] && meta["jtitle"] && meta["aulast"] && meta["year"]) {
+  if (
+    rftParams["atitle"] &&
+    rftParams["jtitle"] &&
+    rftParams["aulast"] &&
+    rftParams["year"]
+  ) {
     has_meta = true;
   }
 
@@ -53,24 +57,24 @@
     );
   }
 
-  if (meta["atitle"]) {
-    base.searchParams.append("rft.atitle", meta["atitle"]);
+  if (rftParams["atitle"]) {
+    base.searchParams.append("rft.atitle", rftParams["atitle"]);
   }
 
-  if (meta["jtitle"]) {
-    base.searchParams.append("rft.jtitle", meta["jtitle"]);
+  if (rftParams["jtitle"]) {
+    base.searchParams.append("rft.jtitle", rftParams["jtitle"]);
   }
 
-  if (meta["aulast"]) {
+  if (rftParams["aulast"]) {
     let split: string | string[], lname: string;
-    if (meta["aulast"].includes(",")) {
-      split = meta["aulast"]
+    if (rftParams["aulast"].includes(",")) {
+      split = rftParams["aulast"]
         .trim()
         .replace(/ +(?= )/g, "")
         .split(",");
       lname = split[0];
     } else {
-      split = meta["aulast"]
+      split = rftParams["aulast"]
         .trim()
         .replace(/ +(?= )/g, "")
         .split(" ");
@@ -79,22 +83,22 @@
     base.searchParams.append("rft.aulast", lname);
   }
 
-  if (meta["year"]) {
-    if (meta["year"].includes("-")) {
-      base.searchParams.append("rft.date", meta["year"].split("-")[0]);
-    } else if (meta["year"].includes("/")) {
-      base.searchParams.append("rft.date", meta["year"].split("/")[0]);
+  if (rftParams["year"]) {
+    if (rftParams["year"].includes("-")) {
+      base.searchParams.append("rft.date", rftParams["year"].split("-")[0]);
+    } else if (rftParams["year"].includes("/")) {
+      base.searchParams.append("rft.date", rftParams["year"].split("/")[0]);
     } else {
-      base.searchParams.append("rft.date", meta["year"]);
+      base.searchParams.append("rft.date", rftParams["year"]);
     }
   }
 
-  if (meta["spage"]) {
-    base.searchParams.append("rft.spage", meta["spage"]);
+  if (rftParams["spage"]) {
+    base.searchParams.append("rft.spage", rftParams["spage"]);
   }
 
-  if (meta["epage"]) {
-    base.searchParams.append("rft.epage", meta["epage"]);
+  if (rftParams["epage"]) {
+    base.searchParams.append("rft.epage", rftParams["epage"]);
   }
 
   window.open(base.href, "_blank");
