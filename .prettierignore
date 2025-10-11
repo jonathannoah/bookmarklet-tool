@@ -2,3 +2,4 @@
 dist
 worker-configuration.d.ts
 .wrangler
+/src/react-app/bookmarklet.js
