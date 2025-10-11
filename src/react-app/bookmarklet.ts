@@ -48,9 +48,31 @@
   }
 
   if (!has_meta) {
-    return alert(
-      "I did not find enough metadata to locate this article automatically. If you see the DOI for this article on the page, select it with your mouse and click this bookmarklet again",
-    );
+    const dialog = document.createElement("dialog");
+
+    dialog.role = "dialog";
+
+    dialog.style =
+      "background:#fff;color:#000;width:25em;margin:auto;padding:1em;border:.5em solid black";
+
+    dialog.innerHTML = `<p>I did not find enough metadata to locate this article automatically. If you see the DOI for this article on the page, select it with your mouse and click this bookmarklet again.</p>`;
+
+    const button = document.createElement("button");
+
+    button.textContent = "Okay";
+
+    button.addEventListener("click", () => {
+      dialog.close();
+    });
+
+    button.style =
+      "background:#fff;color:#000float:right;margin-top:1em;border:2px solid black;padding:4px;cursor:pointer;";
+
+    dialog.appendChild(button);
+
+    document.body.appendChild(dialog);
+
+    return dialog.showModal();
   }
 
   if (meta["atitle"]) {
