@@ -29,7 +29,7 @@
 
   const rftParams: { [index: string]: string } = {};
 
-  for (let querySelector in querySelectors) {
+  for (const querySelector in querySelectors) {
     rftParams[querySelector] = (
       document.querySelector(querySelectors[querySelector]) as HTMLMetaElement
     )?.content;
