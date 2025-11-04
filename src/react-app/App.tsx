@@ -13,41 +13,52 @@ export default function App() {
     | React.RefObject<HTMLTextAreaElement>
     | React.RefObject<null> = useRef(null);
 
+  const bookmarkletUrlRef:
+    | React.RefObject<HTMLTextAreaElement>
+    | React.RefObject<null> = useRef(null);
+
   const bookmarkletText =
     'Drag this link to your browser\'s bookmark toolbar or favorites bar. Click "save" if prompted.';
 
-  function selectAllText() {
-    if (bookmarkletCodeRef.current) {
-      bookmarkletCodeRef.current.select();
+  function selectAllText(
+    ref: React.RefObject<HTMLTextAreaElement> | React.RefObject<null>,
+  ) {
+    if (ref.current) {
+      ref.current.select();
     }
   }
 
   function BookmarkletPreview() {
-    if (!bookmarklet) {
-      return false;
-    }
-
     return (
       <>
         <h2 className="text-xl mb-5">Preview</h2>
-
         <div
-          className="card w-3/4 bg-base-100 shadow-md p-10 mx-auto"
+          className="card w-3/4 bg-base-200 shadow-md p-10 mx-auto"
           dangerouslySetInnerHTML={createBookmarkletPreview()}
         />
+        <fieldset className="fieldset mt-3">
+          <label className="label">Bookmarklet embed code</label>
+          <textarea
+            ref={bookmarkletCodeRef}
+            value={createBookmarkletEmbed().__html}
+            onClick={() => selectAllText(bookmarkletCodeRef)}
+            readOnly
+            className="textarea w-full h-72 "
+          />
+          <p>Copy the code above to add this bookmarklet to your webpage.</p>
 
-        <div className="mt-10">Test DOI: 10.1136/bmj.331.7531.1498</div>
-
-        <div className="mt-8">
-          Copy the code below to add this bookmarklet to your webpage.
-        </div>
-        <textarea
-          ref={bookmarkletCodeRef}
-          value={createBookmarkletEmbed().__html}
-          onClick={selectAllText}
-          readOnly
-          className="textarea w-full h-72 mt-3"
-        />
+          <label className="label mt-3">Bookmarklet URL</label>
+          <textarea
+            ref={bookmarkletUrlRef}
+            value={bookmarklet}
+            onClick={() => selectAllText(bookmarkletUrlRef)}
+            readOnly
+            className="textarea w-full h-40 "
+          />
+          <p>
+            Use this URL as a link target to create your own bookmarklet link.
+          </p>
+        </fieldset>
       </>
     );
   }
@@ -177,7 +188,8 @@ export default function App() {
         />
       </div>
 
-      <BookmarkletPreview />
+      {/* eslint-disable-next-line react-hooks/static-components */}
+      {bookmarklet && <BookmarkletPreview />}
     </div>
   );
 }
