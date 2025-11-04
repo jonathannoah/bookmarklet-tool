@@ -24,7 +24,7 @@
     "@types/react": "19.0.10",
     "@types/react-dom": "19.0.4",
     "@vitejs/plugin-react": "5.0.0",
-    "daisyui": "^5.1.29",
+    "daisyui": "5.2.5",
     "eslint": "9.27.0",
     "eslint-plugin-react-hooks": "5.2.0",
     "eslint-plugin-react-refresh": "0.4.20",
