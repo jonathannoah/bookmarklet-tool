@@ -1,3 +1,4 @@
+/*! v0.1.0 */
 (function () {
   const base = new URL("%BASE%");
   const params = new URLSearchParams("%PARAMS%");
