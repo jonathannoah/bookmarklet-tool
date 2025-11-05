@@ -25,9 +25,11 @@ export default function App() {
     }, [demo]);
   }
 
-  const [baseUrl, setBaseUrl] = useState<string>();
+  const [baseUrl, setBaseUrl] = useState<string>(
+    demo ? "https://samhealth.tdnetdiscover.com/resolver" : "",
+  );
   const [bookmarklet, setBookmarklet] = useState<string>();
-  const [title, setTitle] = useState<string>();
+  const [title, setTitle] = useState<string>(demo ? "Find@SamLib" : "");
   const [parameters, setParameters] = useState<string>();
 
   const bookmarkletCodeRef:
@@ -166,6 +168,9 @@ export default function App() {
           className="input w-full validator"
           placeholder="https://library.example.com/openurl?"
           onChange={handleBaseUrlChange}
+          defaultValue={
+            demo ? "https://samhealth.tdnetdiscover.com/resolver" : ""
+          }
         />
         <p>Check your link resolver documentation for details.</p>
 
@@ -175,6 +180,7 @@ export default function App() {
           className="input w-full"
           placeholder="Find@MyLibrary"
           onChange={handleTitleChange}
+          defaultValue={demo ? "Find@SamLib" : ""}
         />
       </fieldset>
       <div className="mt-3 collapse collapse-plus bg-base-100 border-[var(--color-base-content)]/20 border">
