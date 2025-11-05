@@ -8,18 +8,20 @@ const addBodyClass = (className: string) =>
 const removeBodyClass = (className: string) =>
   document.body.classList.remove(className);
 
-function useZoomBody(demo: boolean) {
-  useEffect(() => {
-    if (demo) {
-      addBodyClass("zoom");
-      return () => {
-        removeBodyClass("zoom");
-      };
-    }
-  }, [demo]);
-}
-
 export default function App() {
+  function useZoomBody(demo: boolean) {
+    useEffect(() => {
+      if (demo) {
+        addBodyClass("zoom");
+        return () => {
+          setBaseUrl("https://samhealth.tdnetdiscover.com/resolver");
+          setTitle("Find@SamLib");
+          removeBodyClass("zoom");
+        };
+      }
+    }, [demo]);
+  }
+
   const [baseUrl, setBaseUrl] = useState<string>();
   const [bookmarklet, setBookmarklet] = useState<string>();
   const [title, setTitle] = useState<string>();
@@ -153,11 +155,6 @@ export default function App() {
   const demo = queryParams.get("demo") == "";
   useZoomBody(demo);
 
-  if (demo) {
-    setBaseUrl("https://samhealth.tdnetdiscover.com/resolver");
-    setTitle("Find@SamLib");
-  }
-
   return (
     <div className="w-md md:w-xl mx-auto my-20">
       <h1 className="text-2xl my-5">Create an OpenURL Bookmarklet</h1>
@@ -170,6 +167,7 @@ export default function App() {
           className="input w-full validator"
           placeholder="https://library.example.com/openurl?"
           onChange={handleBaseUrlChange}
+          value={demo ? "https://samhealth.tdnetdiscover.com/resolver" : ""}
         />
         <p>Check your link resolver documentation for details.</p>
 
@@ -179,6 +177,7 @@ export default function App() {
           className="input w-full"
           placeholder="Find@MyLibrary"
           onChange={handleTitleChange}
+          value={demo ? "Find@SamLib" : ""}
         />
       </fieldset>
       <div className="mt-3 collapse collapse-plus bg-base-100 border-[var(--color-base-content)]/20 border">
