@@ -157,67 +157,91 @@ export default function App() {
   }
 
   return (
-    <div className="w-md md:w-xl mx-auto my-20">
-      <h1 className="text-2xl my-5">Create an OpenURL Bookmarklet</h1>
-
-      <fieldset className="fieldset">
-        <label className="label">OpenURL link resolver base URL</label>
-        <input
-          required
-          type="url"
-          className="input w-full validator"
-          placeholder="https://library.example.com/openurl?"
-          onChange={handleBaseUrlChange}
-          defaultValue={
-            demo ? "https://samhealth.tdnetdiscover.com/resolver" : ""
-          }
-        />
-        <p>Check your link resolver documentation for details.</p>
-
-        <label className="label mt-3">Bookmarklet title</label>
-        <input
-          type="text"
-          className="input w-full"
-          placeholder="Find@MyLibrary"
-          onChange={handleTitleChange}
-          defaultValue={demo ? "Find@SamLib" : ""}
-        />
-      </fieldset>
-      <div className="mt-3 collapse collapse-plus bg-base-100 border-[var(--color-base-content)]/20 border">
-        <input type="checkbox" />
-        <div className="collapse-title">Advanced settings</div>
-        <div className="collapse-content">
-          <fieldset className="fieldset">
-            <label className="label">Additional URL parameters</label>
-            <input
-              type="text"
-              className="input w-full validator"
-              placeholder="&parameter_1=value_1&parameter_2=value_2"
-              onChange={handleParametersChange}
-            />
-            <p>Parameters will be appended to the OpenURL.</p>
-          </fieldset>
+    <>
+      <div className="navbar bg-base-100 shadow-sm">
+        <div className="flex-1">
+          <a className="link link-hover text-lg px-5">
+            Library Link Resolver Bookmarklet Tool
+          </a>
+        </div>
+        <div className="flex-none">
+          <a
+            href="https://github.com/jonathannoah/bookmarklet-tool"
+            className="btn btn-square btn-ghost"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <svg
+              viewBox="0 0 20 20"
+              className="size-5 fill-black/40 dark:fill-gray-400"
+            >
+              <path d="M10 0C4.475 0 0 4.475 0 10a9.994 9.994 0 006.838 9.488c.5.087.687-.213.687-.476 0-.237-.013-1.024-.013-1.862-2.512.463-3.162-.612-3.362-1.175-.113-.287-.6-1.175-1.025-1.412-.35-.188-.85-.65-.013-.663.788-.013 1.35.725 1.538 1.025.9 1.512 2.337 1.087 2.912.825.088-.65.35-1.088.638-1.338-2.225-.25-4.55-1.112-4.55-4.937 0-1.088.387-1.987 1.025-2.688-.1-.25-.45-1.274.1-2.65 0 0 .837-.262 2.75 1.026a9.28 9.28 0 012.5-.338c.85 0 1.7.112 2.5.337 1.912-1.3 2.75-1.024 2.75-1.024.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.362.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.574.688.474A10.016 10.016 0 0020 10c0-5.525-4.475-10-10-10z"></path>
+            </svg>
+          </a>
         </div>
       </div>
-      <div className="flex gap-2">
-        <input
-          type="button"
-          className="btn btn-soft my-5 w-1/3"
-          onClick={testLinkResolver}
-          disabled={!baseUrl}
-          value="Test Link Resolver"
-        />
-        <input
-          type="button"
-          className="btn btn-soft btn-primary my-5 w-2/3"
-          onClick={createBookmarklet}
-          disabled={!baseUrl}
-          value="Create Bookmarklet"
-        />
-      </div>
+      <div className="w-md md:w-xl mx-auto my-20">
+        <h1 className="text-2xl my-5">Create an OpenURL Bookmarklet</h1>
 
-      {/* eslint-disable-next-line react-hooks/static-components */}
-      {bookmarklet && <BookmarkletPreview />}
-    </div>
+        <fieldset className="fieldset">
+          <label className="label">OpenURL link resolver base URL</label>
+          <input
+            required
+            type="url"
+            className="input w-full validator"
+            placeholder="https://library.example.com/openurl?"
+            onChange={handleBaseUrlChange}
+            defaultValue={
+              demo ? "https://samhealth.tdnetdiscover.com/resolver" : ""
+            }
+          />
+          <p>Check your link resolver documentation for details.</p>
+
+          <label className="label mt-3">Bookmarklet title</label>
+          <input
+            type="text"
+            className="input w-full"
+            placeholder="Find@MyLibrary"
+            onChange={handleTitleChange}
+            defaultValue={demo ? "Find@SamLib" : ""}
+          />
+        </fieldset>
+        <div className="mt-3 collapse collapse-plus bg-base-100 border-[var(--color-base-content)]/20 border">
+          <input type="checkbox" />
+          <div className="collapse-title">Advanced settings</div>
+          <div className="collapse-content">
+            <fieldset className="fieldset">
+              <label className="label">Additional URL parameters</label>
+              <input
+                type="text"
+                className="input w-full validator"
+                placeholder="&parameter_1=value_1&parameter_2=value_2"
+                onChange={handleParametersChange}
+              />
+              <p>Parameters will be appended to the OpenURL.</p>
+            </fieldset>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="button"
+            className="btn btn-soft my-5 w-1/3"
+            onClick={testLinkResolver}
+            disabled={!baseUrl}
+            value="Test Link Resolver"
+          />
+          <input
+            type="button"
+            className="btn btn-soft btn-primary my-5 w-2/3"
+            onClick={createBookmarklet}
+            disabled={!baseUrl}
+            value="Create Bookmarklet"
+          />
+        </div>
+
+        {/* eslint-disable-next-line react-hooks/static-components */}
+        {bookmarklet && <BookmarkletPreview />}
+      </div>
+    </>
   );
 }
