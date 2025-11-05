@@ -1,7 +1,23 @@
 // src/App.tsx
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import bookmarkletTemplate from "./bookmarklet.js?raw";
+
+const addBodyClass = (className: string) =>
+  document.body.classList.add(className);
+const removeBodyClass = (className: string) =>
+  document.body.classList.remove(className);
+
+function useZoomBody(zoom: boolean) {
+  useEffect(() => {
+    if (zoom) {
+      addBodyClass("zoom");
+      return () => {
+        removeBodyClass("zoom");
+      };
+    }
+  }, [zoom]);
+}
 
 export default function App() {
   const [baseUrl, setBaseUrl] = useState<string>();
@@ -56,7 +72,8 @@ export default function App() {
             className="textarea w-full h-40 "
           />
           <p>
-            Use this URL as a link target to create your own bookmarklet link.
+            Use this URL as a link <code>href</code> to create your own
+            bookmarklet link.
           </p>
         </fieldset>
       </>
@@ -131,6 +148,10 @@ export default function App() {
       console.log(e);
     }
   }
+
+  const queryParams = new URLSearchParams(window.location.search);
+  const zoom = queryParams.get("zoom") == "";
+  useZoomBody(zoom);
 
   return (
     <div className="w-md md:w-xl mx-auto my-20">

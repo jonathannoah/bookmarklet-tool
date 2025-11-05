@@ -2,3 +2,7 @@
 @plugin "daisyui" {
   exclude: properties;
 }
+
+body.zoom {
+    zoom: 200%;
+}
