@@ -9,22 +9,26 @@ const removeBodyClass = (className: string) =>
   document.body.classList.remove(className);
 
 export default function App() {
+  const queryParams = new URLSearchParams(window.location.search);
+  const demo: boolean = queryParams.get("demo") === "";
+  const demoBaseUrl: string = queryParams.get("baseUrl") ?? "";
+  const demoTitle: string = queryParams.get("title") ?? "";
+  useZoomBody(demo);
+
   function useZoomBody(demo: boolean) {
     useEffect(() => {
       if (demo) {
         addBodyClass("zoom");
         return () => {
-          setBaseUrl("https://samhealth.tdnetdiscover.com/resolver");
-          setTitle("Find@SamLib");
           removeBodyClass("zoom");
         };
       }
     }, [demo]);
   }
 
-  const [baseUrl, setBaseUrl] = useState<string>();
+  const [baseUrl, setBaseUrl] = useState<string>(demo ? demoBaseUrl : "");
   const [bookmarklet, setBookmarklet] = useState<string>();
-  const [title, setTitle] = useState<string>();
+  const [title, setTitle] = useState<string>(demo ? demoTitle : "");
   const [parameters, setParameters] = useState<string>();
 
   const bookmarkletCodeRef:
@@ -151,10 +155,6 @@ export default function App() {
     }
   }
 
-  const queryParams = new URLSearchParams(window.location.search);
-  const demo = queryParams.get("demo") == "";
-  useZoomBody(demo);
-
   return (
     <div className="w-md md:w-xl mx-auto my-20">
       <h1 className="text-2xl my-5">Create an OpenURL Bookmarklet</h1>
@@ -167,7 +167,7 @@ export default function App() {
           className="input w-full validator"
           placeholder="https://library.example.com/openurl?"
           onChange={handleBaseUrlChange}
-          value={demo ? "https://samhealth.tdnetdiscover.com/resolver" : ""}
+          value={demo ? baseUrl : ""}
         />
         <p>Check your link resolver documentation for details.</p>
 
@@ -177,7 +177,7 @@ export default function App() {
           className="input w-full"
           placeholder="Find@MyLibrary"
           onChange={handleTitleChange}
-          value={demo ? "Find@SamLib" : ""}
+          value={demo ? title : ""}
         />
       </fieldset>
       <div className="mt-3 collapse collapse-plus bg-base-100 border-[var(--color-base-content)]/20 border">
