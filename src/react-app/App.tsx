@@ -8,15 +8,15 @@ const addBodyClass = (className: string) =>
 const removeBodyClass = (className: string) =>
   document.body.classList.remove(className);
 
-function useZoomBody(zoom: boolean) {
+function useZoomBody(demo: boolean) {
   useEffect(() => {
-    if (zoom) {
+    if (demo) {
       addBodyClass("zoom");
       return () => {
         removeBodyClass("zoom");
       };
     }
-  }, [zoom]);
+  }, [demo]);
 }
 
 export default function App() {
@@ -150,8 +150,13 @@ export default function App() {
   }
 
   const queryParams = new URLSearchParams(window.location.search);
-  const zoom = queryParams.get("zoom") == "";
-  useZoomBody(zoom);
+  const demo = queryParams.get("demo") == "";
+  useZoomBody(demo);
+
+  if (demo) {
+    setBaseUrl("https://samhealth.tdnetdiscover.com/resolver");
+    setTitle("Find@SamLib");
+  }
 
   return (
     <div className="w-md md:w-xl mx-auto my-20">
