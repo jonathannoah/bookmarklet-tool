@@ -11,6 +11,7 @@ const removeBodyClass = (className: string) =>
 export default function App() {
   const queryParams = new URLSearchParams(window.location.search);
   const demo: boolean = queryParams.get("demo") === "";
+  const embedded: boolean = queryParams.get("embedded") === "";
 
   useZoomBody(demo);
 
@@ -156,6 +157,51 @@ export default function App() {
     }
   }
 
+  if (embedded) {
+    const embeddedBaseUrl = queryParams.get("baseUrl") ?? "";
+    const embeddedTitle = queryParams.get("title") ?? "Find@MyLibrary";
+    const embeddedParameters = queryParams.get("params") ?? "";
+    const bookmarkletReplacements = [
+      ["%BASE%", embeddedBaseUrl],
+      ["%PARAMS%", embeddedParameters],
+    ];
+
+    const composedBookmarklet = bookmarkletReplacements.reduce(
+      (acc, [oldStr, newStr]) => {
+        return acc.replace(oldStr ?? "", newStr ?? "");
+      },
+      bookmarkletTemplate,
+    );
+
+    const bookmarkletFunction = `javascript:${encodeURIComponent(composedBookmarklet as string)}`;
+
+    function innerHtml() {
+      return {
+        __html: `
+    <a href="${bookmarkletFunction ?? ""}" class="link link-info" ${!bookmarklet ? "disabled" : ""}>${embeddedTitle ?? "Find@MyLibrary"}</a>
+    <p class="mt-2">${bookmarkletText}</p>
+    <p class="mt-2">
+        Don't see your favorites bar? See help for
+        <a class="link" href="https://support.microsoft.com/en-us/microsoft-edge/see-your-favorites-bar-in-microsoft-edge-and-internet-explorer-11-566736f8-a11d-52e2-4f6f-7a713e1750d2">Microsoft Edge</a>,
+        <a class="link" href="https://support.mozilla.org/en-US/kb/bookmarks-toolbar-display-favorite-websites">Firefox</a>, or
+        <a class="link" href="https://support.google.com/chrome/answer/188842">Google Chrome</a>.
+    </p>  
+    <img class="mt-2 outline-1 -outline-offset-1 outline-base-200" src="screencap.gif" alt="Dragging the bookmarklet to the favorites bar." />
+        `,
+      };
+    }
+
+    return (
+      <>
+        <title>Add Bookmarklet</title>
+        <div
+          className="card max-w-md bg-base-200 shadow-md p-10 mx-auto mt-5"
+          dangerouslySetInnerHTML={innerHtml()}
+        />
+      </>
+    );
+  }
+
   return (
     <>
       <div className="navbar bg-base-100 shadow-sm">
@@ -206,7 +252,7 @@ export default function App() {
             defaultValue={demo ? "Find@SamLib" : ""}
           />
         </fieldset>
-        <div className="mt-3 collapse collapse-plus bg-base-100 border-[var(--color-base-content)]/20 border">
+        <div className="mt-3 collapse collapse-plus bg-base-100 border-(--color-base-content)/20 border">
           <input type="checkbox" />
           <div className="collapse-title">Advanced settings</div>
           <div className="collapse-content">
@@ -239,7 +285,6 @@ export default function App() {
           />
         </div>
 
-        {/* eslint-disable-next-line react-hooks/static-components */}
         {bookmarklet && <BookmarkletPreview />}
       </div>
     </>
