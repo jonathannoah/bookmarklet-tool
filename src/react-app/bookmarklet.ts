@@ -1,4 +1,4 @@
-/*! v0.1.0 */
+/*! v2 */
 (function () {
   const base = new URL("%BASE%");
   const params = new URLSearchParams("%PARAMS%");
@@ -11,7 +11,12 @@
   const select = window.getSelection()?.toString();
 
   if (select !== "") {
-    base.searchParams.append("rft_id", `info:doi/${select}`);
+    if (select?.includes("10.")) {
+      base.searchParams.append("rft_id", `info:doi/${select}`);
+      return window.open(base);
+    }
+    base.searchParams.append("sid", `Entrez:PubMed`);
+    base.searchParams.append("id", `pmid:${select}`);
     return window.open(base);
   }
 
@@ -54,7 +59,7 @@
 
   if (!has_meta) {
     return alert(
-      "I did not find enough metadata to locate this article automatically. If you see the DOI for this article on the page, select it with your mouse and click this bookmarklet again",
+      "I did not find enough metadata to locate this article automatically. If you see the DOI or PMID for this article on the page, select it with your mouse and click this bookmarklet again",
     );
   }
 
